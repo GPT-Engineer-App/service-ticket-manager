@@ -1,12 +1,22 @@
 import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreateTicket = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  const [userRole, setUserRole] = useState("");
+  
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    setUserRole(role);
+    if (role !== "Customer") {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

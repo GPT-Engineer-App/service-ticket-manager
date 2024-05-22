@@ -1,9 +1,20 @@
 import { Box, Text, VStack, Select } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const [data, setData] = useState({ openTickets: 0, closedTickets: 0 });
+  const [userRole, setUserRole] = useState("");
+  const navigate = useNavigate();
   const [filter, setFilter] = useState("month");
+
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    setUserRole(role);
+    if (role !== "ServiceManager") {
+      navigate("/");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const storedTickets = JSON.parse(localStorage.getItem("tickets")) || [];

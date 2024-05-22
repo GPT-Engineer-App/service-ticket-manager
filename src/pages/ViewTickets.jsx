@@ -1,9 +1,20 @@
 import { Box, Text, VStack, Button, FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ViewTickets = () => {
   const [tickets, setTickets] = useState([]);
   const [solution, setSolution] = useState("");
+  const [userRole, setUserRole] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    setUserRole(role);
+    if (!["Customer", "ServiceModerator", "ServiceAgent"].includes(role)) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const storedTickets = JSON.parse(localStorage.getItem("tickets")) || [];
@@ -39,10 +50,10 @@ const ViewTickets = () => {
           <Box key={index} p={4} borderWidth="1px" borderRadius="lg" w="100%">
             <Text fontSize="xl" fontWeight="bold">{ticket.title}</Text>
             <Text>Status: {ticket.status}</Text>
-            {ticket.status === "Open" && (
+            {userRole === "ServiceModerator" && ticket.status === "Open" && (
               <Button colorScheme="blue" onClick={() => handleAssign(index)}>Assign</Button>
             )}
-            {ticket.status === "Assigned" && (
+            {userRole === "ServiceAgent" && ticket.status === "Assigned" && (
               <Box>
                 <FormControl id="solution" isRequired>
                   <FormLabel>Solution</FormLabel>
