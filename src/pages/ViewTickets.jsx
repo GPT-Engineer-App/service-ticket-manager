@@ -1,16 +1,25 @@
 import { Box, Text, VStack, Button, FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ViewTickets = () => {
   const [tickets, setTickets] = useState([]);
   const [solution, setSolution] = useState("");
+  const [userRole, setUserRole] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    setUserRole(role);
     const storedTickets = JSON.parse(localStorage.getItem("tickets")) || [];
     setTickets(storedTickets);
   }, []);
 
   const handleAssign = (id) => {
+    if (userRole !== "ServiceModerator") {
+      alert("You do not have permission to assign tickets.");
+      return;
+    }
     const updatedTickets = tickets.map((ticket, index) => {
       if (index === id) {
         return { ...ticket, status: "Assigned" };
@@ -22,6 +31,10 @@ const ViewTickets = () => {
   };
 
   const handleUpdate = (id) => {
+    if (userRole !== "ServiceAgent") {
+      alert("You do not have permission to resolve tickets.");
+      return;
+    }
     const updatedTickets = tickets.map((ticket, index) => {
       if (index === id) {
         return { ...ticket, status: "Resolved", solution };
@@ -39,10 +52,10 @@ const ViewTickets = () => {
           <Box key={index} p={4} borderWidth="1px" borderRadius="lg" w="100%">
             <Text fontSize="xl" fontWeight="bold">{ticket.title}</Text>
             <Text>Status: {ticket.status}</Text>
-            {ticket.status === "Open" && (
+            {ticket.status === "Open" && userRole === "ServiceModerator" && (
               <Button colorScheme="blue" onClick={() => handleAssign(index)}>Assign</Button>
             )}
-            {ticket.status === "Assigned" && (
+            {ticket.status === "Assigned" && userRole === "ServiceAgent" && (
               <Box>
                 <FormControl id="solution" isRequired>
                   <FormLabel>Solution</FormLabel>
