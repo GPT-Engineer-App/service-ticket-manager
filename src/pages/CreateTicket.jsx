@@ -11,7 +11,7 @@ const CreateTicket = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle ticket creation logic here
-    const newTicket = { title, description, status: "Open" };
+    const newTicket = { title, description, status: "Open", id: Date.now() };
     const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
     tickets.push(newTicket);
     localStorage.setItem("tickets", JSON.stringify(tickets));

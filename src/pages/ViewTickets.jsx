@@ -1,8 +1,9 @@
-import { Box, Text, VStack, Button } from "@chakra-ui/react";
+import { Box, Text, VStack, Button, FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 const ViewTickets = () => {
   const [tickets, setTickets] = useState([]);
+  const [solution, setSolution] = useState("");
 
   useEffect(() => {
     const storedTickets = JSON.parse(localStorage.getItem("tickets")) || [];
@@ -10,8 +11,8 @@ const ViewTickets = () => {
   }, []);
 
   const handleAssign = (id) => {
-    const updatedTickets = tickets.map(ticket => {
-      if (ticket.id === id) {
+    const updatedTickets = tickets.map((ticket, index) => {
+      if (index === id) {
         return { ...ticket, status: "Assigned" };
       }
       return ticket;
@@ -20,9 +21,9 @@ const ViewTickets = () => {
     localStorage.setItem("tickets", JSON.stringify(updatedTickets));
   };
 
-  const handleUpdate = (id, solution) => {
-    const updatedTickets = tickets.map(ticket => {
-      if (ticket.id === id) {
+  const handleUpdate = (id) => {
+    const updatedTickets = tickets.map((ticket, index) => {
+      if (index === id) {
         return { ...ticket, status: "Resolved", solution };
       }
       return ticket;
@@ -42,7 +43,13 @@ const ViewTickets = () => {
               <Button colorScheme="blue" onClick={() => handleAssign(index)}>Assign</Button>
             )}
             {ticket.status === "Assigned" && (
-              <Button colorScheme="green" onClick={() => handleUpdate(index, "Solution provided")}>Provide Solution</Button>
+              <Box>
+                <FormControl id="solution" isRequired>
+                  <FormLabel>Solution</FormLabel>
+                  <Textarea value={solution} onChange={(e) => setSolution(e.target.value)} />
+                </FormControl>
+                <Button colorScheme="green" onClick={() => handleUpdate(index)}>Provide Solution</Button>
+              </Box>
             )}
             {ticket.status === "Resolved" && (
               <Text>Solution: {ticket.solution}</Text>
