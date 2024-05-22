@@ -1,14 +1,22 @@
 import { Box, Button, FormControl, FormLabel, Input, Textarea, VStack } from "@chakra-ui/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CreateTicket = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle ticket creation logic here
-    console.log("Ticket Created:", { title, description });
+    const newTicket = { title, description, status: "Open" };
+    const tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+    tickets.push(newTicket);
+    localStorage.setItem("tickets", JSON.stringify(tickets));
+    console.log("Ticket Created:", newTicket);
+    navigate("/view-tickets");
   };
 
   return (
