@@ -1,11 +1,15 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
-  // Placeholder for dashboard data
-  const data = {
-    openTickets: 5,
-    closedTickets: 10,
-  };
+  const [data, setData] = useState({ openTickets: 0, closedTickets: 0 });
+
+  useEffect(() => {
+    const storedTickets = JSON.parse(localStorage.getItem("tickets")) || [];
+    const openTickets = storedTickets.filter(ticket => ticket.status === "Open").length;
+    const closedTickets = storedTickets.filter(ticket => ticket.status === "Resolved").length;
+    setData({ openTickets, closedTickets });
+  }, []);
 
   return (
     <Box p={4}>
