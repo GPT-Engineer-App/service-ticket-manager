@@ -1,7 +1,14 @@
-import { Box, Flex, Link } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
+import { Box, Flex, Link, Button } from "@chakra-ui/react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("userRole");
+    navigate("/");
+  };
+
   return (
     <Box bg="brand.800" px={4}>
       <Flex h={16} alignItems="center" justifyContent="space-between">
@@ -19,6 +26,7 @@ const Navbar = () => {
             Dashboard
           </Link>
         </Box>
+        <Button colorScheme="red" onClick={handleLogout}>Logout</Button>
       </Flex>
     </Box>
   );
